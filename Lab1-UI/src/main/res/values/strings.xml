@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">LabsCM20232-Gr06</string>
+    <string name="personal_data_activity">PersonalDataActivity</string>
+    <string name="personal_data_form_title">Información de contacto</string>
+    <string name="personal_data_names">Nombres</string>
+    <string name="personal_data_surname">Apellidos</string>
+    <string name="personal_data_sex_tittle">Sexo</string>
+    <string name="personal_data_sex_m">Hombre</string>
+    <string name="personal_data_sex_f">Mujer</string>
+    <string name="personal_data_schoolgrade_title">Grado de escolaridad</string>
+    <string name="personal_data_schoolgrade_primary">Primaria</string>
+    <string name="personal_data_schoolgrade_secondary">Secundaria</string>
+    <string name="personal_data_schoolgrade_university">Universidad</string>
+    <string name="personal_data_schoolgrade_other">Other</string>
 </resources>
