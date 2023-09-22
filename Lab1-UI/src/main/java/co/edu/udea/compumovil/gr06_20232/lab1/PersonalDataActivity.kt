@@ -1,6 +1,7 @@
 package co.edu.udea.compumovil.gr06_20232.lab1
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -43,6 +44,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.Size
@@ -170,17 +172,8 @@ fun PersonalDataForm() {
         }
         schoolGrade = dropDownMenu()
 
-        Row(
-            modifier = Modifier.padding(start = 16.dp, bottom = 16.dp),
-            horizontalArrangement = Arrangement.Start
-        ) {
-            Button(
-                onClick = {
-                    validatePersonalData(context)
-                }, modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Siguiente")
-            }
+        OutlinedButton(onClick = { validatePersonalData(context) }) {
+            Text(text = stringResource(id = R.string.ui_next_button))
         }
     }
 }
@@ -256,6 +249,9 @@ fun validatePersonalData(context: Context) {
     Log.i(sexoLog, sexVal)
     Log.i(fechaLog, birthDate)
     Log.i(escolaridadLog, schoolGrade)
+
+    val contactDataActivityIntent = Intent(context, ContactDataActivity::class.java)
+    context.startActivity(contactDataActivityIntent)
 }
 
 
