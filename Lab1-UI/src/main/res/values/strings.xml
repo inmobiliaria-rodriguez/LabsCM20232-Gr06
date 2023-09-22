@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">LabsCM20232-Gr06</string>
     <string name="title_activity_contact_data">ContactDataActivity</string>
+    <string name="contact_data_title">Información de contacto</string>
     <string name="contact_data_phone">Telefono</string>
     <string name="contact_data_address">Dirección</string>
     <string name="contact_data_email">Correo</string>
     <string name="contact_data_country">Pais</string>
     <string name="contact_data_city">Ciudad</string>
+    <string name="ui_next_button">Siguiente</string>
+    <string name="invalid_form_message">Faltan campos obligatorios!</string>
 </resources>

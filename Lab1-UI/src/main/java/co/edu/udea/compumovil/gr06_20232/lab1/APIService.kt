@@ -12,22 +12,22 @@ data class Country(
     var name: CountryName,
 )
 
-const val BASE_URL = "https://restcountries.com/v3.1/subregion/"
+const val COUNTRIES_BASE_URL = "https://restcountries.com/v3.1/subregion/"
 
 interface APIService {
     @GET("South America?fields=name")
     suspend fun getCountries(): List<Country>
 
     companion object {
-        var apiService: APIService? = null
-        fun getInstance(): APIService {
-            if (apiService == null) {
-                apiService = Retrofit.Builder()
-                    .baseUrl(BASE_URL)
+        var countryApiService: APIService? = null
+        fun getCountryAPIInstance(): APIService {
+            if (countryApiService == null) {
+                countryApiService = Retrofit.Builder()
+                    .baseUrl(COUNTRIES_BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build().create(APIService::class.java)
             }
-            return apiService!!
+            return countryApiService!!
         }
     }
 }

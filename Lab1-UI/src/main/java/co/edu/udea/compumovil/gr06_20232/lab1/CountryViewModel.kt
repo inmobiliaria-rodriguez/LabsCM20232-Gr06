@@ -15,7 +15,7 @@ class CountryViewModel : ViewModel() {
 
     fun getCountryList() {
         viewModelScope.launch {
-            val apiService = APIService.getInstance()
+            val apiService = APIService.getCountryAPIInstance()
             try {
                 _countryList.clear()
                 _countryList.addAll(apiService.getCountries())

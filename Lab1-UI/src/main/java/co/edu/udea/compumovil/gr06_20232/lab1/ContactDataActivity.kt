@@ -1,7 +1,9 @@
 package co.edu.udea.compumovil.gr06_20232.lab1
 
 import CountryViewModel
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -22,6 +24,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -45,34 +49,31 @@ import co.edu.udea.compumovil.gr06_20232.lab1.ui.theme.LabsCM20232Gr06Theme
 
 class ContactDataActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        val cm = CountryViewModel()
+        val contryModel = CountryViewModel()
         super.onCreate(savedInstanceState)
         setContent {
             LabsCM20232Gr06Theme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ContactDataForm(cm)
+                    ContactDataForm(contryModel)
                 }
             }
         }
     }
 }
 
+var phoneNumberState by mutableStateOf("")
+var addressState by mutableStateOf("")
+var emailState by mutableStateOf("")
+var selectedCountry by mutableStateOf("")
+var selectedCity by mutableStateOf("")
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactDataForm(countryModel: CountryViewModel) {
-    var phoneNumberState by remember {
-        mutableStateOf("")
-    }
-    var addressState by remember {
-        mutableStateOf("")
-    }
-    var emailState by remember {
-        mutableStateOf("")
-    }
+    val context = LocalContext.current
 
     LaunchedEffect(Unit, block = {
         countryModel.getCountryList()
@@ -85,7 +86,7 @@ fun ContactDataForm(countryModel: CountryViewModel) {
         Row {
             TextField(
                 value = phoneNumberState,
-                onValueChange = { phoneNumberState = it},
+                onValueChange = { phoneNumberState = it },
                 label = {
                         Text(
                             text = stringResource(id = R.string.contact_data_phone),
@@ -142,6 +143,12 @@ fun ContactDataForm(countryModel: CountryViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
         //countries
         CountryDropDownMenu(countryModel = countryModel)
+        //cities
+        CityDropDownMenu()
+        
+        OutlinedButton(onClick = { validateContactData(context) }) {
+            Text(text = stringResource(id = R.string.ui_next_button))
+        }
     }
 }
 
@@ -151,8 +158,6 @@ fun CountryDropDownMenu(countryModel: CountryViewModel) {
 
     var expanded by remember { mutableStateOf(false) }
     val countries = countryModel.countryList
-    var selectedCountry by remember { mutableStateOf("") }
-
     var textfieldSize by remember { mutableStateOf(Size.Zero) }
 
     val icon = if (expanded)
@@ -194,4 +199,73 @@ fun CountryDropDownMenu(countryModel: CountryViewModel) {
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CityDropDownMenu() {
+
+    var expanded by remember { mutableStateOf(false) }
+    val cities: MutableSet<String> = mutableSetOf("Bogotá", "Medellín", "Cali", "Pereira")
+    var textfieldSize by remember { mutableStateOf(Size.Zero) }
+
+    val icon = if (expanded)
+        Icons.Filled.KeyboardArrowUp
+    else
+        Icons.Filled.KeyboardArrowDown
+
+
+    Column(Modifier.padding(20.dp)) {
+        OutlinedTextField(
+            value = selectedCity,
+            onValueChange = { selectedCity = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .onGloballyPositioned { coordinates ->
+                    //This value is used to assign to the DropDown the same width
+                    textfieldSize = coordinates.size.toSize()
+                },
+            label = { Text(stringResource(id = R.string.contact_data_city)) },
+            trailingIcon = {
+                Icon(icon, "contentDescription",
+                    Modifier.clickable { expanded = !expanded })
+            },
+            readOnly = true
+        )
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .width(with(LocalDensity.current) { textfieldSize.width.toDp() })
+        ) {
+            cities.forEach { city ->
+                DropdownMenuItem(text = { Text(text = city)},
+                    onClick = {
+                        selectedCity = city
+                        expanded = false
+                    })
+            }
+        }
+    }
+}
+
+fun validateContactData(context: Context) {
+    if (phoneNumberState == "" || emailState == "" || selectedCountry == "" ) {
+        Log.e("ERROR", context.resources.getString(R.string.invalid_form_message))
+        return
+    }
+    val title: String = context.resources.getString(R.string.contact_data_title) + ":"
+    val phone: String = context.resources.getString(R.string.contact_data_phone) + ":"
+    val address: String = context.resources.getString(R.string.contact_data_address) + ":"
+    val email: String = context.resources.getString(R.string.contact_data_email) + ":"
+    val country: String = context.resources.getString(R.string.contact_data_country) + ":"
+    val city: String = context.resources.getString(R.string.contact_data_city) + ":"
+
+    Log.i(title, "")
+    Log.i(phone, phoneNumberState)
+    Log.i(address, addressState)
+    Log.i(email, emailState)
+    Log.i(country, selectedCountry)
+    Log.i(city, selectedCity)
 }
