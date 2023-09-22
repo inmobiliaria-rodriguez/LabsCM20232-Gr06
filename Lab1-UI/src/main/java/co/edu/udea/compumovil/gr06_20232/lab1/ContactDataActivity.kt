@@ -42,6 +42,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
@@ -97,6 +98,7 @@ fun ContactDataForm(countryModel: CountryViewModel) {
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
                 )
             )
         }
@@ -116,7 +118,8 @@ fun ContactDataForm(countryModel: CountryViewModel) {
                     )
                 },
                 keyboardOptions = KeyboardOptions(
-                    autoCorrect = false
+                    autoCorrect = false,
+                    imeAction = ImeAction.Next
                 )
             )
         }
@@ -136,7 +139,8 @@ fun ContactDataForm(countryModel: CountryViewModel) {
                     )
                 },
                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
                 )
             )
         }
