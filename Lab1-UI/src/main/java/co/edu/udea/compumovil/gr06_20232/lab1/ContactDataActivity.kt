@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -19,6 +18,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.rounded.Email
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.LocationOn
+import androidx.compose.material.icons.rounded.Phone
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -84,7 +87,9 @@ fun ContactDataForm(countryModel: CountryViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Telefono
-        Row {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Rounded.Phone, contentDescription = "phone Icon")
+            Spacer(modifier = Modifier.width(20.dp))
             TextField(
                 value = phoneNumberState,
                 onValueChange = { phoneNumberState = it },
@@ -105,7 +110,9 @@ fun ContactDataForm(countryModel: CountryViewModel) {
 
         Spacer(modifier = Modifier.height(16.dp))
         // Direccion
-        Row {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Rounded.LocationOn, contentDescription = "address Icon")
+            Spacer(modifier = Modifier.width(20.dp))
             TextField(
                 value = addressState,
                 onValueChange = { addressState = it},
@@ -126,7 +133,9 @@ fun ContactDataForm(countryModel: CountryViewModel) {
 
         Spacer(modifier = Modifier.height(16.dp))
         // email
-        Row {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Rounded.Email, contentDescription = "email Icon")
+            Spacer(modifier = Modifier.width(20.dp))
             TextField(
                 value = emailState,
                 onValueChange = { emailState = it},
@@ -171,37 +180,42 @@ fun CountryDropDownMenu(countryModel: CountryViewModel) {
 
 
     Column(Modifier.padding(20.dp)) {
-        OutlinedTextField(
-            value = selectedCountry,
-            onValueChange = { selectedCountry = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .onGloballyPositioned { coordinates ->
-                    //This value is used to assign to the DropDown the same width
-                    textfieldSize = coordinates.size.toSize()
+        Row(verticalAlignment = Alignment.CenterVertically){
+            Icon(Icons.Rounded.Home, contentDescription = "country Icon")
+            Spacer(modifier = Modifier.width(20.dp))
+            OutlinedTextField(
+                value = selectedCountry,
+                onValueChange = { selectedCountry = it },
+                modifier = Modifier
+                    .height(60.dp)
+                    .onGloballyPositioned { coordinates ->
+                        //This value is used to assign to the DropDown the same width
+                        textfieldSize = coordinates.size.toSize()
+                    },
+                label = { Text(stringResource(id = R.string.contact_data_country)) },
+                trailingIcon = {
+                    Icon(icon, "contentDescription",
+                        Modifier.clickable { expanded = !expanded })
                 },
-            label = { Text(stringResource(id = R.string.contact_data_country)) },
-            trailingIcon = {
-                Icon(icon, "contentDescription",
-                    Modifier.clickable { expanded = !expanded })
-            },
-            readOnly = true
-        )
+                readOnly = true
+            )
 
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .width(with(LocalDensity.current) { textfieldSize.width.toDp() })
-        ) {
-            countries.forEach { country ->
-                DropdownMenuItem(text = { Text(text = country.name.common)},
-                    onClick = {
-                        selectedCountry = country.name.common
-                        expanded = false
-                    })
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier
+                    .width(with(LocalDensity.current) { textfieldSize.width.toDp() })
+            ) {
+                countries.forEach { country ->
+                    DropdownMenuItem(text = { Text(text = country.name.common)},
+                        onClick = {
+                            selectedCountry = country.name.common
+                            expanded = false
+                        })
+                }
             }
         }
+
     }
 }
 
@@ -220,35 +234,39 @@ fun CityDropDownMenu() {
 
 
     Column(Modifier.padding(20.dp)) {
-        OutlinedTextField(
-            value = selectedCity,
-            onValueChange = { selectedCity = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .onGloballyPositioned { coordinates ->
-                    //This value is used to assign to the DropDown the same width
-                    textfieldSize = coordinates.size.toSize()
+        Row(verticalAlignment = Alignment.CenterVertically){
+            Icon(Icons.Rounded.Home, contentDescription = "country Icon")
+            Spacer(modifier = Modifier.width(20.dp))
+            OutlinedTextField(
+                value = selectedCity,
+                onValueChange = { selectedCity = it },
+                modifier = Modifier
+                    .height(60.dp)
+                    .onGloballyPositioned { coordinates ->
+                        //This value is used to assign to the DropDown the same width
+                        textfieldSize = coordinates.size.toSize()
+                    },
+                label = { Text(stringResource(id = R.string.contact_data_city)) },
+                trailingIcon = {
+                    Icon(icon, "contentDescription",
+                        Modifier.clickable { expanded = !expanded })
                 },
-            label = { Text(stringResource(id = R.string.contact_data_city)) },
-            trailingIcon = {
-                Icon(icon, "contentDescription",
-                    Modifier.clickable { expanded = !expanded })
-            },
-            readOnly = true
-        )
+                readOnly = true
+            )
 
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .width(with(LocalDensity.current) { textfieldSize.width.toDp() })
-        ) {
-            cities.forEach { city ->
-                DropdownMenuItem(text = { Text(text = city)},
-                    onClick = {
-                        selectedCity = city
-                        expanded = false
-                    })
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier
+                    .width(with(LocalDensity.current) { textfieldSize.width.toDp() })
+            ) {
+                cities.forEach { city ->
+                    DropdownMenuItem(text = { Text(text = city)},
+                        onClick = {
+                            selectedCity = city
+                            expanded = false
+                        })
+                }
             }
         }
     }

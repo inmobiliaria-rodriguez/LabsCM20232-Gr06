@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LabsCM20232-Gr06</string>
+    <string name="title_activity_contact_data">ContactDataActivity</string>
+    <string name="contact_data_title">Contact information</string>
+    <string name="contact_data_phone">Phone</string>
+    <string name="contact_data_address">Address</string>
+    <string name="contact_data_email">Email</string>
+    <string name="contact_data_country">Country</string>
+    <string name="contact_data_city">City</string>
+    <string name="ui_next_button">Next</string>
+    <string name="invalid_form_message">Required fields are missing!</string>
+    <string name="personal_data_activity">PersonalDataActivity</string>
+    <string name="personal_data_form_title">Personal information</string>
+    <string name="personal_data_names">Names</string>
+    <string name="personal_data_surname">Surnames</string>
+    <string name="personal_data_sex_tittle">Sex</string>
+    <string name="personal_data_sex_m">Male</string>
+    <string name="personal_data_sex_f">Female</string>
+    <string name="personal_data_birth_date_title">Birth date</string>
+    <string name="personal_data_schoolgrade_title">Schoolgrade</string>
+    <string name="personal_data_schoolgrade_primary">Primary</string>
+    <string name="personal_data_schoolgrade_secondary">Secondary</string>
+    <string name="personal_data_schoolgrade_university">University</string>
+    <string name="personal_data_schoolgrade_other">Other</string>
+</resources>
