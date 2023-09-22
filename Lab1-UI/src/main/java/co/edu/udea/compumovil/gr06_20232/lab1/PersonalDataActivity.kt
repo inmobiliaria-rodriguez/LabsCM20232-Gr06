@@ -1,6 +1,8 @@
 package co.edu.udea.compumovil.gr06_20232.lab1
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -34,18 +36,27 @@ import androidx.compose.ui.unit.dp
 import co.edu.udea.compumovil.gr06_20232.lab1.ui.theme.LabsCM20232Gr06Theme
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 
 import androidx.compose.ui.unit.toSize
+import com.maxkeppeker.sheets.core.models.base.rememberSheetState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 
 class PersonalDataActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,15 +74,32 @@ class PersonalDataActivity : ComponentActivity() {
     }
 }
 
+var name by mutableStateOf("")
+var surname by mutableStateOf("")
+var sexInt by mutableStateOf(0)
+var birthDate by mutableStateOf("")
+var schoolGrade by mutableStateOf("")
+var sexVal by mutableStateOf("")
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonalDataForm() {
-    var nombre by remember { mutableStateOf("") }
-    var apellido by remember { mutableStateOf("") }
-    var selectedSex by remember { mutableStateOf(0) }
 
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+    val calendarState = rememberSheetState()
+
+    val context = LocalContext.current
+
+    CalendarDialog(state = calendarState, config = CalendarConfig(
+        monthSelection = true, yearSelection = true
+    ), selection = CalendarSelection.Date { date ->
+        Log.d("SelectedDate", "$date")
+        birthDate = date.toString()
+    })
+
+    Column(
+        modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
         Text(
             text = stringResource(id = R.string.personal_data_form_title),
@@ -83,84 +111,151 @@ fun PersonalDataForm() {
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
-        TextField(value = nombre, onValueChange = { nombre = it }, label = {
-            Text(
-                text = stringResource(id = R.string.personal_data_names),
-                modifier = Modifier.padding(10.dp),
-                textAlign = TextAlign.Center
-            )
-        })
+        TextField(value = name,
+            onValueChange = { name = it },
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Words,
+                autoCorrect = false,
+                imeAction = ImeAction.Next
+            ),
+            label = {
+                Text(
+                    text = stringResource(id = R.string.personal_data_names),
+                    modifier = Modifier.padding(10.dp),
+                    textAlign = TextAlign.Center
+                )
+            })
         Spacer(modifier = Modifier.height(16.dp))
-        TextField(value = apellido, onValueChange = { apellido = it }, label = {
-            Text(
-                text = stringResource(id = R.string.personal_data_surname),
-                modifier = Modifier.padding(10.dp),
-                textAlign = TextAlign.Center
-            )
-        })
+        TextField(value = surname,
+            onValueChange = { surname = it },
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Words,
+                autoCorrect = false,
+                imeAction = ImeAction.Next
+            ),
+            label = {
+                Text(
+                    text = stringResource(id = R.string.personal_data_surname),
+                    modifier = Modifier.padding(10.dp),
+                    textAlign = TextAlign.Center
+                )
+            })
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = stringResource(id = R.string.personal_data_birth_date_title))
+            Spacer(modifier = Modifier.width(20.dp))
+            Button(onClick = {
+                calendarState.show()
+            }) {
+                Text(text = "Cambiar")
+            }
+        }
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = stringResource(id = R.string.personal_data_sex_tittle))
-            RadioButton(selected = selectedSex == 0, onClick = { selectedSex = 0 })
+            RadioButton(selected = sexInt == 0, onClick = {
+                sexInt = 0
+                sexVal = "Masculino"
+            })
             Text(text = stringResource(id = R.string.personal_data_sex_m))
 
-            RadioButton(selected = selectedSex == 1, onClick = { selectedSex = 1 })
+            RadioButton(selected = sexInt == 1, onClick = {
+                sexInt = 1
+                sexVal = "Femenino"
+            })
             Text(text = stringResource(id = R.string.personal_data_sex_f))
         }
-        dropDownMenu()
+        schoolGrade = dropDownMenu()
 
+        Row(
+            modifier = Modifier.padding(start = 16.dp, bottom = 16.dp),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Button(
+                onClick = {
+                    validatePersonalData(context)
+                }, modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Siguiente")
+            }
+        }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun dropDownMenu() {
+fun dropDownMenu(): String {
 
     var expanded by remember { mutableStateOf(false) }
-    val suggestions = listOf(stringResource(id = R.string.personal_data_schoolgrade_primary), stringResource(id = R.string.personal_data_schoolgrade_secondary), stringResource(id = R.string.personal_data_schoolgrade_university), stringResource(id = R.string.personal_data_schoolgrade_other))
+    val suggestions = listOf(
+        stringResource(id = R.string.personal_data_schoolgrade_primary),
+        stringResource(id = R.string.personal_data_schoolgrade_secondary),
+        stringResource(id = R.string.personal_data_schoolgrade_university),
+        stringResource(id = R.string.personal_data_schoolgrade_other)
+    )
     var selectedText by remember { mutableStateOf("") }
 
     var textfieldSize by remember { mutableStateOf(Size.Zero) }
 
-    val icon = if (expanded)
-        Icons.Filled.KeyboardArrowUp
-    else
-        Icons.Filled.KeyboardArrowDown
+    val icon = if (expanded) Icons.Filled.KeyboardArrowUp
+    else Icons.Filled.KeyboardArrowDown
 
 
     Column(Modifier.padding(20.dp)) {
-        OutlinedTextField(
-            value = selectedText,
+        OutlinedTextField(value = selectedText,
             onValueChange = { selectedText = it },
             modifier = Modifier
                 .fillMaxWidth()
                 .onGloballyPositioned { coordinates ->
-                    //This value is used to assign to the DropDown the same width
                     textfieldSize = coordinates.size.toSize()
-                },
+                }
+                .padding(10.dp),
             label = { Text(stringResource(id = R.string.personal_data_schoolgrade_title)) },
             trailingIcon = {
-                Icon(icon, "contentDescription",
-                    Modifier.clickable { expanded = !expanded })
+                Icon(icon, "contentDescription", Modifier.clickable { expanded = !expanded })
             },
-           readOnly = true
+            readOnly = true
         )
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .width(with(LocalDensity.current) { textfieldSize.width.toDp() })
+            modifier = Modifier.width(with(LocalDensity.current) { textfieldSize.width.toDp() })
         ) {
             suggestions.forEach { label ->
-                DropdownMenuItem(text = { Text(text = label)},
-                    onClick = {
+                DropdownMenuItem(text = { Text(text = label) }, onClick = {
                     selectedText = label
                     expanded = false
                 })
             }
         }
     }
+
+    return selectedText
+}
+
+fun validatePersonalData(context: Context) {
+    if (name == "" || surname == "" || birthDate == "") {
+        Log.e("ERROR", context.resources.getString(R.string.invalid_form_message))
+        return
+    }
+    val title: String = context.resources.getString(R.string.personal_data_form_title) + ":"
+    val nombreLog: String = context.resources.getString(R.string.personal_data_names) + ":"
+    val apellidoLog: String = context.resources.getString(R.string.personal_data_surname) + ":"
+    val sexoLog: String = context.resources.getString(R.string.personal_data_sex_tittle) + ":"
+    val fechaLog: String =
+        context.resources.getString(R.string.personal_data_birth_date_title) + ":"
+    val escolaridadLog: String =
+        context.resources.getString(R.string.personal_data_schoolgrade_title) + ":"
+
+    Log.i(title, "")
+    Log.i(nombreLog, name)
+    Log.i(apellidoLog, surname)
+    Log.i(sexoLog, sexVal)
+    Log.i(fechaLog, birthDate)
+    Log.i(escolaridadLog, schoolGrade)
 }
 
 

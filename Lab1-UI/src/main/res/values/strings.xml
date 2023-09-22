@@ -13,4 +13,5 @@
     <string name="personal_data_schoolgrade_secondary">Secundaria</string>
     <string name="personal_data_schoolgrade_university">Universidad</string>
     <string name="personal_data_schoolgrade_other">Other</string>
+    <string name="invalid_form_message">Faltan campos obligatorios!</string>
 </resources>
