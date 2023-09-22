@@ -10,7 +10,7 @@
     <string name="ui_next_button">Siguiente</string>
     <string name="invalid_form_message">Faltan campos obligatorios!</string>
     <string name="personal_data_activity">PersonalDataActivity</string>
-    <string name="personal_data_form_title">Información de contacto</string>
+    <string name="personal_data_form_title">Información personal</string>
     <string name="personal_data_names">Nombres</string>
     <string name="personal_data_surname">Apellidos</string>
     <string name="personal_data_sex_tittle">Sexo</string>

@@ -42,6 +42,11 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.rounded.AccountCircle
+import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
@@ -113,51 +118,57 @@ fun PersonalDataForm() {
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
-        TextField(value = name,
-            onValueChange = { name = it },
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
-                autoCorrect = false,
-                imeAction = ImeAction.Next
-            ),
-            label = {
-                Text(
-                    text = stringResource(id = R.string.personal_data_names),
-                    modifier = Modifier.padding(10.dp),
-                    textAlign = TextAlign.Center
-                )
-            })
-        Spacer(modifier = Modifier.height(16.dp))
-        TextField(value = surname,
-            onValueChange = { surname = it },
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
-                autoCorrect = false,
-                imeAction = ImeAction.Next
-            ),
-            label = {
-                Text(
-                    text = stringResource(id = R.string.personal_data_surname),
-                    modifier = Modifier.padding(10.dp),
-                    textAlign = TextAlign.Center
-                )
-            })
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = stringResource(id = R.string.personal_data_birth_date_title))
+            Icon(Icons.Rounded.Person, contentDescription = "Person Icon")
             Spacer(modifier = Modifier.width(20.dp))
-            Button(onClick = {
-                calendarState.show()
-            }) {
-                Text(text = "Cambiar")
-            }
+            Spacer(modifier = Modifier.height(16.dp))
+            TextField(value = name,
+                onValueChange = { name = it },
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Words,
+                    autoCorrect = false,
+                    imeAction = ImeAction.Next
+                ),
+                label = {
+                    Text(
+                        text = stringResource(id = R.string.personal_data_names),
+                        modifier = Modifier.padding(10.dp),
+                        textAlign = TextAlign.Center
+                    )
+                })
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start)
+        {
+            Icon(Icons.Rounded.AccountCircle, contentDescription = "Person Icon")
+            Spacer(modifier = Modifier.width(20.dp))
+            TextField(value = surname,
+                onValueChange = { surname = it },
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Words,
+                    autoCorrect = false,
+                    imeAction = ImeAction.Next
+                ),
+                label = {
+                    Text(
+                        text = stringResource(id = R.string.personal_data_surname),
+                        modifier = Modifier.padding(10.dp),
+                        textAlign = TextAlign.Center
+                    )
+                })
         }
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
         ) {
+            Icon(Icons.Rounded.Favorite, contentDescription = "Sex Icon")
+            Spacer(modifier = Modifier.width(50.dp))
             Text(text = stringResource(id = R.string.personal_data_sex_tittle))
+            Spacer(modifier = Modifier.width(15.dp))
             RadioButton(selected = sexInt == 0, onClick = {
                 sexInt = 0
                 sexVal = "Masculino"
@@ -170,6 +181,20 @@ fun PersonalDataForm() {
             })
             Text(text = stringResource(id = R.string.personal_data_sex_f))
         }
+        Row(
+            verticalAlignment = Alignment.CenterVertically ,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Icon(Icons.Rounded.DateRange, contentDescription = "date Icon", modifier = Modifier.padding(10.dp))
+            Text(text = stringResource(id = R.string.personal_data_birth_date_title))
+            Spacer(modifier = Modifier.width(20.dp))
+            Button(onClick = {
+                calendarState.show()
+            }) {
+                Text(text = "Cambiar")
+            }
+        }
+
         schoolGrade = dropDownMenu()
 
         OutlinedButton(onClick = { validatePersonalData(context) }) {
@@ -198,32 +223,36 @@ fun dropDownMenu(): String {
 
 
     Column(Modifier.padding(20.dp)) {
-        OutlinedTextField(value = selectedText,
-            onValueChange = { selectedText = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .onGloballyPositioned { coordinates ->
-                    textfieldSize = coordinates.size.toSize()
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Rounded.Edit, contentDescription = "schoolgrade Icon")
+            Spacer(modifier = Modifier.width(20.dp))
+            OutlinedTextField(value = selectedText,
+                onValueChange = { selectedText = it },
+                modifier = Modifier
+                    .height(60.dp)
+                    .onGloballyPositioned { coordinates ->
+                        textfieldSize = coordinates.size.toSize()
+                    },
+                label = { Text(stringResource(id = R.string.personal_data_schoolgrade_title)) },
+                trailingIcon = {
+                    Icon(icon, "contentDescription", Modifier.clickable { expanded = !expanded })
+                },
+                readOnly = true
+            )
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.width(with(LocalDensity.current) { textfieldSize.width.toDp() })
+            ) {
+                suggestions.forEach { label ->
+                    DropdownMenuItem(text = { Text(text = label) }, onClick = {
+                        selectedText = label
+                        expanded = false
+                    })
                 }
-                .padding(10.dp),
-            label = { Text(stringResource(id = R.string.personal_data_schoolgrade_title)) },
-            trailingIcon = {
-                Icon(icon, "contentDescription", Modifier.clickable { expanded = !expanded })
-            },
-            readOnly = true
-        )
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.width(with(LocalDensity.current) { textfieldSize.width.toDp() })
-        ) {
-            suggestions.forEach { label ->
-                DropdownMenuItem(text = { Text(text = label) }, onClick = {
-                    selectedText = label
-                    expanded = false
-                })
             }
         }
+
     }
 
     return selectedText
