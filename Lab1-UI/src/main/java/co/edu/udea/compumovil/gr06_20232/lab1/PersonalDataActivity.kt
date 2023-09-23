@@ -2,6 +2,7 @@ package co.edu.udea.compumovil.gr06_20232.lab1
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -54,6 +55,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.ImeAction
@@ -92,7 +94,7 @@ var sexVal by mutableStateOf("")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonalDataForm() {
-
+    val configuration = LocalConfiguration.current
     val calendarState = rememberSheetState()
 
     val context = LocalContext.current
@@ -118,55 +120,101 @@ fun PersonalDataForm() {
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
-        ) {
-            Icon(Icons.Rounded.Person, contentDescription = "Person Icon")
-            Spacer(modifier = Modifier.width(20.dp))
-            Spacer(modifier = Modifier.height(16.dp))
-            TextField(value = name,
-                onValueChange = { name = it },
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
-                    autoCorrect = false,
-                    imeAction = ImeAction.Next
-                ),
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.personal_data_names),
-                        modifier = Modifier.padding(10.dp),
-                        textAlign = TextAlign.Center
-                    )
-                })
+        when (configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Icon(Icons.Rounded.Person, contentDescription = "Person Icon")
+                    Spacer(modifier = Modifier.width(20.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+                    TextField(value = name,
+                        onValueChange = { name = it },
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Words,
+                            autoCorrect = false,
+                            imeAction = ImeAction.Next
+                        ),
+                        label = {
+                            Text(
+                                text = stringResource(id = R.string.personal_data_names),
+                                modifier = Modifier.padding(10.dp),
+                                textAlign = TextAlign.Center
+                            )
+                        })
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Icon(Icons.Rounded.AccountCircle, contentDescription = "Person Icon")
+                    Spacer(modifier = Modifier.width(20.dp))
+                    TextField(value = surname,
+                        onValueChange = { surname = it },
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Words,
+                            autoCorrect = false,
+                            imeAction = ImeAction.Next
+                        ),
+                        label = {
+                            Text(
+                                text = stringResource(id = R.string.personal_data_surname),
+                                modifier = Modifier.padding(10.dp),
+                                textAlign = TextAlign.Center
+                            )
+                        })
+                }
+
+            }else ->{
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Icon(Icons.Rounded.Person, contentDescription = "Person Icon")
+                    Spacer(modifier = Modifier.width(20.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+                    TextField(value = name,
+                        onValueChange = { name = it },
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Words,
+                            autoCorrect = false,
+                            imeAction = ImeAction.Next
+                        ),
+                        label = {
+                            Text(
+                                text = stringResource(id = R.string.personal_data_names),
+                                modifier = Modifier.padding(10.dp),
+                                textAlign = TextAlign.Center
+                            )
+                        })
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start)
+                {
+                    Icon(Icons.Rounded.AccountCircle, contentDescription = "Person Icon")
+                    Spacer(modifier = Modifier.width(20.dp))
+                    TextField(value = surname,
+                        onValueChange = { surname = it },
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Words,
+                            autoCorrect = false,
+                            imeAction = ImeAction.Next
+                        ),
+                        label = {
+                            Text(
+                                text = stringResource(id = R.string.personal_data_surname),
+                                modifier = Modifier.padding(10.dp),
+                                textAlign = TextAlign.Center
+                            )
+                        })
+                }
+            }
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start)
-        {
-            Icon(Icons.Rounded.AccountCircle, contentDescription = "Person Icon")
-            Spacer(modifier = Modifier.width(20.dp))
-            TextField(value = surname,
-                onValueChange = { surname = it },
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
-                    autoCorrect = false,
-                    imeAction = ImeAction.Next
-                ),
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.personal_data_surname),
-                        modifier = Modifier.padding(10.dp),
-                        textAlign = TextAlign.Center
-                    )
-                })
-        }
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
             Icon(Icons.Rounded.Favorite, contentDescription = "Sex Icon")
-            Spacer(modifier = Modifier.width(50.dp))
+            Spacer(modifier = Modifier.width(20.dp))
             Text(text = stringResource(id = R.string.personal_data_sex_tittle))
             Spacer(modifier = Modifier.width(15.dp))
             RadioButton(selected = sexInt == 0, onClick = {
@@ -195,11 +243,37 @@ fun PersonalDataForm() {
             }
         }
 
-        schoolGrade = dropDownMenu()
-
-        OutlinedButton(onClick = { validatePersonalData(context) }) {
-            Text(text = stringResource(id = R.string.ui_next_button))
+        when (configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                Row(
+                    verticalAlignment = Alignment.Top,
+                    horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth().padding(start = 16.dp)
+                ) {
+                    schoolGrade = dropDownMenu()
+                }
+            }else -> {
+                schoolGrade = dropDownMenu()
+            }
         }
+
+        when (configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                Row(
+                    verticalAlignment = Alignment.Top,
+                    horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth().padding(end = 40.dp)
+                ) {
+                    OutlinedButton(onClick = { validatePersonalData(context) }, modifier = Modifier.width(150.dp)) {
+                        Text(text = stringResource(id = R.string.ui_next_button))
+                    }
+                }
+            }else -> {
+                OutlinedButton(onClick = { validatePersonalData(context) }, modifier = Modifier.width(100.dp)) {
+                    Text(text = stringResource(id = R.string.ui_next_button))
+                }
+        }
+        }
+
+
     }
 }
 

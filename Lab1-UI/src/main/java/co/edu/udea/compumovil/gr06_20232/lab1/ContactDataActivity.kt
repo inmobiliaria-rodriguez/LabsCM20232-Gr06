@@ -2,6 +2,7 @@ package co.edu.udea.compumovil.gr06_20232.lab1
 
 import CountryViewModel
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -42,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -78,6 +81,7 @@ var selectedCity by mutableStateOf("")
 @Composable
 fun ContactDataForm(countryModel: CountryViewModel) {
     val context = LocalContext.current
+    val configuration = LocalConfiguration.current
 
     LaunchedEffect(Unit, block = {
         countryModel.getCountryList()
@@ -86,49 +90,98 @@ fun ContactDataForm(countryModel: CountryViewModel) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Telefono
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Rounded.Phone, contentDescription = "phone Icon")
-            Spacer(modifier = Modifier.width(20.dp))
-            TextField(
-                value = phoneNumberState,
-                onValueChange = { phoneNumberState = it },
-                label = {
-                        Text(
-                            text = stringResource(id = R.string.contact_data_phone),
-                            modifier = Modifier
-                                .padding(10.dp),
-                            color = MaterialTheme.colorScheme.primary
+        when (configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    // Telefono
+                    Icon(Icons.Rounded.Phone, contentDescription = "phone Icon")
+                    Spacer(modifier = Modifier.width(20.dp))
+                    TextField(
+                        value = phoneNumberState,
+                        onValueChange = { phoneNumberState = it },
+                        label = {
+                            Text(
+                                text = stringResource(id = R.string.contact_data_phone),
+                                modifier = Modifier
+                                    .padding(10.dp),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
                         )
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
-                )
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        // Direccion
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Rounded.LocationOn, contentDescription = "address Icon")
-            Spacer(modifier = Modifier.width(20.dp))
-            TextField(
-                value = addressState,
-                onValueChange = { addressState = it},
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.contact_data_address),
-                        modifier = Modifier
-                            .padding(10.dp),
-                        color = MaterialTheme.colorScheme.primary
                     )
-                },
-                keyboardOptions = KeyboardOptions(
-                    autoCorrect = false,
-                    imeAction = ImeAction.Next
-                )
-            )
+                    // Direccion
+                    Spacer(modifier = Modifier.width(30.dp))
+                    Icon(Icons.Rounded.LocationOn, contentDescription = "address Icon")
+                    Spacer(modifier = Modifier.width(20.dp))
+                    TextField(
+                        value = addressState,
+                        onValueChange = { addressState = it},
+                        label = {
+                            Text(
+                                text = stringResource(id = R.string.contact_data_address),
+                                modifier = Modifier
+                                    .padding(10.dp),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            autoCorrect = false,
+                            imeAction = ImeAction.Next
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+            }
+            else -> {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Rounded.Phone, contentDescription = "phone Icon")
+                    Spacer(modifier = Modifier.width(20.dp))
+                    TextField(
+                        value = phoneNumberState,
+                        onValueChange = { phoneNumberState = it },
+                        label = {
+                            Text(
+                                text = stringResource(id = R.string.contact_data_phone),
+                                modifier = Modifier
+                                    .padding(10.dp),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+                // Direccion
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Rounded.LocationOn, contentDescription = "address Icon")
+                    Spacer(modifier = Modifier.width(20.dp))
+                    TextField(
+                        value = addressState,
+                        onValueChange = { addressState = it},
+                        label = {
+                            Text(
+                                text = stringResource(id = R.string.contact_data_address),
+                                modifier = Modifier
+                                    .padding(10.dp),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            autoCorrect = false,
+                            imeAction = ImeAction.Next
+                        )
+                    )
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -154,12 +207,24 @@ fun ContactDataForm(countryModel: CountryViewModel) {
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
-        //countries
-        CountryDropDownMenu(countryModel = countryModel)
-        //cities
-        CityDropDownMenu()
-        
-        OutlinedButton(onClick = { validateContactData(context) }) {
+        when (configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                Row(verticalAlignment = Alignment.Top, modifier = Modifier.fillMaxWidth()){
+                    //countries
+                    CountryDropDownMenu(countryModel = countryModel)
+                    //cities
+                    CityDropDownMenu()
+                }
+            }else -> {
+                //countries
+                CountryDropDownMenu(countryModel = countryModel)
+                //cities
+                CityDropDownMenu()
+            }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+        OutlinedButton(onClick = { validateContactData(context) }, modifier = Modifier.width(100.dp)) {
             Text(text = stringResource(id = R.string.ui_next_button))
         }
     }
@@ -168,6 +233,7 @@ fun ContactDataForm(countryModel: CountryViewModel) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CountryDropDownMenu(countryModel: CountryViewModel) {
+    val configuration = LocalConfiguration.current
 
     var expanded by remember { mutableStateOf(false) }
     val countries = countryModel.countryList
@@ -179,7 +245,7 @@ fun CountryDropDownMenu(countryModel: CountryViewModel) {
         Icons.Filled.KeyboardArrowDown
 
 
-    Column(Modifier.padding(20.dp)) {
+    Column(Modifier.padding(10.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically){
             Icon(Icons.Rounded.Home, contentDescription = "country Icon")
             Spacer(modifier = Modifier.width(20.dp))
@@ -187,7 +253,13 @@ fun CountryDropDownMenu(countryModel: CountryViewModel) {
                 value = selectedCountry,
                 onValueChange = { selectedCountry = it },
                 modifier = Modifier
-                    .height(60.dp)
+                    .conditional(!(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)){
+                        height(60.dp)
+                    }
+                    .conditional(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
+                        height(60.dp)
+                        fillMaxWidth(0.45f)
+                    }
                     .onGloballyPositioned { coordinates ->
                         //This value is used to assign to the DropDown the same width
                         textfieldSize = coordinates.size.toSize()
@@ -222,6 +294,7 @@ fun CountryDropDownMenu(countryModel: CountryViewModel) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CityDropDownMenu() {
+    val configuration = LocalConfiguration.current
 
     var expanded by remember { mutableStateOf(false) }
     val cities: MutableSet<String> = mutableSetOf("Bogotá", "Medellín", "Cali", "Pereira")
@@ -233,7 +306,7 @@ fun CityDropDownMenu() {
         Icons.Filled.KeyboardArrowDown
 
 
-    Column(Modifier.padding(20.dp)) {
+    Column(Modifier.padding(10.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically){
             Icon(Icons.Rounded.Home, contentDescription = "country Icon")
             Spacer(modifier = Modifier.width(20.dp))
@@ -241,7 +314,12 @@ fun CityDropDownMenu() {
                 value = selectedCity,
                 onValueChange = { selectedCity = it },
                 modifier = Modifier
-                    .height(60.dp)
+                    .conditional(!(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)){
+                        height(60.dp)
+                    }
+                    .conditional(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
+                        fillMaxWidth(0.9f)
+                    }
                     .onGloballyPositioned { coordinates ->
                         //This value is used to assign to the DropDown the same width
                         textfieldSize = coordinates.size.toSize()
@@ -290,4 +368,12 @@ fun validateContactData(context: Context) {
     Log.i(email, emailState)
     Log.i(country, selectedCountry)
     Log.i(city, selectedCity)
+}
+
+fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier) : Modifier {
+    return if (condition) {
+        then(modifier(Modifier))
+    } else {
+        this
+    }
 }
